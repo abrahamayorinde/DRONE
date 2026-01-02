@@ -48,7 +48,7 @@ void fsi6::isr()
 
 /*
  At resting position the remote control values may not be at their default values.
- The default remote control value for the yaw, pitch and roll commands should be in the center of the allowable range at 1500.
+ The default remote control value for the yaw, pitch and roll commands should be in the center of the allowable range {1000,2000} at 1500.
  However, in reality, the analog remote control may have some slack where the actual values may deviate from the default value +/- several counts.
  This routine calculates the actual default value.  This default value is subsequently used as the offset to compensate for the remote control inputs.
  */
