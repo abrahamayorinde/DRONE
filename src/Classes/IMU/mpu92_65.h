@@ -6,7 +6,7 @@
 
 
 void checkIMUSPISensor();
-void calibrateGyro(float& gx_offset, float& gy_offset, float& gz_offset);
+void calibrateGyro(int32_t& gx_offset, int32_t& gy_offset, int32_t& gz_offset);
 void getSensorData();
 
 #endif // MPU92_65_H

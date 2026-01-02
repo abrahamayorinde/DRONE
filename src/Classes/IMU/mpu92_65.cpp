@@ -15,16 +15,16 @@ class MPU_92_65
 }
 */
 
-float gx_offset;// -67;// -130;
-float gy_offset;//-14;// -119;
-float gz_offset;//-13;// -29;
+int32_t gx_offset;// -67;// -130;
+int32_t gy_offset;//-14;// -119;
+int32_t gz_offset;//-13;// -29;
 
-float GyroX_Filt, GyroY_Filt, GyroZ_Filt;
+int32_t GyroX_Filt, GyroY_Filt, GyroZ_Filt;
 
-float AccX_Filt, AccY_Filt, AccZ_Filt;
+int32_t AccX_Filt, AccY_Filt, AccZ_Filt;
 
-float AccX, AccY, AccZ;
-float GyroX, GyroY, GyroZ;
+int32_t AccX, AccY, AccZ;
+int32_t GyroX, GyroY, GyroZ;
 
 bfs::Mpu6500 imu(&SPI, 10);
 
@@ -49,9 +49,9 @@ void checkIMUSPISensor()
     }
 }
 
-void calibrateGyro(float& gx_offset, float& gy_offset, float& gz_offset)
+void calibrateGyro(int32_t& gx_offset, int32_t& gy_offset, int32_t& gz_offset)
 {
-  float sum[3] = {0};
+  int32_t sum[3] = {0};
 
   for(int i = 0; i < IMU_CALIBRATION_COUNT; i++)
   {
@@ -75,6 +75,10 @@ void calibrateGyro(float& gx_offset, float& gy_offset, float& gz_offset)
   
 }
 
+
+/*
+ Get sensor data from the imu object.
+ */
 void getSensorData()
 {
   if (imu.Read())

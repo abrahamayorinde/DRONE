@@ -9,14 +9,21 @@ fsi6::fsi6()
 {
 }
 
-float fsi6::InputValue[validChannels] = {0,0,0,0,0};
+float_t fsi6::InputValue[validChannels] = {0,0,0,0,0};
 
+/*
+ Interrupt service routine to process the channel data for the roll, pitch, yaw and velocity inputs.
+ Channel 0 -> roll
+ Channel 1 -> pitch
+ Channel 2 -> yaw
+ Channel 3 -> velocity
+ */
 void fsi6::isr()
 {
-    static unsigned long microsAtLastPulse = 0;
-    static unsigned long time = 0;
-    static unsigned long previousMicros = 0;
-    static unsigned long pulseCounter = 0;
+    static uint32_t microsAtLastPulse = 0;
+    static uint32_t time = 0;
+    static uint32_t previousMicros = 0;
+    static uint32_t pulseCounter = 0;
 
     microsAtLastPulse = micros();
     time = microsAtLastPulse - previousMicros;
@@ -38,9 +45,16 @@ void fsi6::isr()
     }
 }
 
+
+/*
+ At resting position the remote control values may not be at their default values.
+ The default remote control value for the yaw, pitch and roll commands should be in the center of the allowable range at 1500.
+ However, in reality, the analog remote control may have some slack where the actual values may deviate from the default value +/- several counts.
+ This routine calculates the actual default value.  This default value is subsequently used as the offset to compensate for the remote control inputs.
+ */
 void fsi6::calibrateRemote()
 {
-  for(int i = 0; i<REMOTE_CALIBRATION_COUNT; i++)
+  for(uint16_t i = 0; i<REMOTE_CALIBRATION_COUNT; i++)
   {
     yaw_offset += InputValue[Yaw];
     pitch_offset += InputValue[Pitch];

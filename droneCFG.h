@@ -2,19 +2,15 @@
 #ifndef DRONE_CFG_H
 #define DRONE_CFG_H
 
-#include "mpu6500.h"
 #include "src/Classes/Filter/filters.h"
 #include "src/Classes/PID/pid.h"
 #include "src/Classes/Remote/fsi6.h"
 #include "src/Classes/IMU/mpu92_65.h"
 
-//bfs::Mpu6500 imu(&SPI, 10);
-
 fsi6 RemoteControl;
 
 SecondOrderFilter Pitch_2nd;
 SecondOrderFilter Roll_2nd;
-
 
 PID elevation_control(RemoteControl.InputValue[Velocity], PVelocityVertical, IVelocityVertical, DVelocityVertical, FeedForwardGainVertical, integral_Windup, loop_Saturation, false);
 PID pitch_control(RemoteControl.InputValue[Velocity], PAnglePitch, IAnglePitch, DAnglePitch,FeedForwardGainPitch, pitch_integral_Windup, loop_Saturation, false);

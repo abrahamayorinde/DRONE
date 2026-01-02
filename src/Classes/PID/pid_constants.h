@@ -1,5 +1,6 @@
 #ifndef PID_CONSTANTS_H
 #define PID_CONSTANTS_H
+#include <stdint.h>
 
     //const float PVelocityVertical = 1;
     //const float IVelocityVertical = 0;
@@ -45,9 +46,9 @@ const float IVelocityVertical = 0;
 const float DVelocityVertical = 0;
 const float FeedForwardGainVertical = 1.0;
 /****************************************/
-const float PAngleRoll =  0.08; //0.200;
-const float IAngleRoll =  0.200;//0.300;
-const float DAngleRoll =  0;    //.0500;
+const float PAngleRoll =  2.4;//0.08; //0.200;
+const float IAngleRoll =  6.0;//0.200;//0.300;
+const float DAngleRoll =  0;  //0.0   //.0500;
 const float FeedForwardGainRoll = 1.0;
 
 const float Roll_Rate_Damping = 0.9;
@@ -56,9 +57,9 @@ const float IRateRoll =  .1500;   //.2000;
 const float DRateRoll =  0.000010;//.0002;
 const float FeedForwardGainRollRate = 1.0;
 /****************************************/
-const float PAnglePitch = 0.08; //0.200;
-const float IAnglePitch = 0.200;//0.300;
-const float DAnglePitch = 0;    //.0500;
+const float PAnglePitch = 2.4;//0.08; //0.200;
+const float IAnglePitch = 6.0;//0.200;//0.300;
+const float DAnglePitch = 0;  //0.0   //.0500;
 const float FeedForwardGainPitch = 1.0;
 
 const float Pitch_Rate_Damping = 0.9;
@@ -67,9 +68,9 @@ const float IRatePitch =  .1500;   //.2000;
 const float DRatePitch =  0.000010;//.0002;
 const float FeedForwardGainPitchRate = 1.0;
 /****************************************/
-const float PRateYaw =    0.0750000;//0.15000
-const float IRateYaw =    0.0125000;//.05
-const float DRateYaw =    0.0000375;//.00015
+const float PRateYaw =    2.25;  //0.0750000;//0.15000
+const float IRateYaw =   .375;   //0.0125000;//.05
+const float DRateYaw =   .001125;//0.0000375;//.00015
 const float FeedForwardGainYawRate = 1.0;
 
 
