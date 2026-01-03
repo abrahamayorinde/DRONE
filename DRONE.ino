@@ -4,18 +4,7 @@
 
 #define MICROSEC_PER_SECOND 1000000
 
-///////////////////////////////////  EXTERN    VARIABLES      ///////////////////////////////////
-
-extern int32_t AccX, AccY, AccZ;
-extern int32_t GyroX, GyroY, GyroZ;
-extern int32_t GyroX_Filt, GyroY_Filt, GyroZ_Filt;
-extern int32_t AccX_Filt, AccY_Filt, AccZ_Filt;
-extern int32_t gx_offset, gy_offset, gz_offset;
-
-
-
 ///////////////////////////////////   LOCAL   VARIABLES      ///////////////////////////////////
-
 float deltaT_F = 0;
 unsigned long startTime = 0;
 unsigned long endTime = 0;
@@ -36,37 +25,31 @@ float InputPitch, InputRoll, InputYaw = {0};
 float dutyCycleRearLeft, dutyCycleFrontLeft, dutyCycleRearRight, dutyCycleFrontRight = {0};
 float rearLeftMotorCommand, frontLeftMotorCommand, rearRightMotorCommand, frontRightMotorCommand = {0};
 ///////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////      CONSTANTS      ///////////////////////////////////
 
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////      FUNCTION PROTOTYPES      //////////////////////////////
 
-////////////////////////////////////      OBJECTS      ////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////
 
 void setup() 
 {
   Serial.begin(115200);
 
-  checkIMUSPISensor();
+  imu_6500.checkIMUSPISensor();
 
-  Serial.print("Setup starting!");
   pinMode(MOTOR_FRONT_RIGHT, OUTPUT);
   pinMode(MOTOR_FRONT_LEFT, OUTPUT);
   pinMode(MOTOR_REAR_RIGHT, OUTPUT);
   pinMode(MOTOR_REAR_LEFT, OUTPUT);
-  
+
   attachInterrupt(digitalPinToInterrupt(interruptPin), RemoteControl.isr, RISING);
 
   analogWriteResolution(8); //Resolution of data written to pinMode outputs is 8-bit
 
-  calibrateGyro(gx_offset, gy_offset, gz_offset);
+  imu_6500.calibrateGyro();
 
   RemoteControl.calibrateRemote();  
 
-  getSensorData();
-  
+  imu_6500.getSensorData();
+
   MadgwickConverge();
 }
 
@@ -76,7 +59,7 @@ void loop()
   endTime = micros();
   deltaT_F = ((float)(endTime - startTime)/MICROSEC_PER_SECOND); //convert from microseconds to seconds
 
-  getSensorData();
+  imu_6500.getSensorData();
   
   DesiredRollAngle  =  (RemoteControl.InputValue[Roll] - RemoteControl.roll_offset)/ROLL_MARGIN;
   DesiredRollAngle  = maxRoll*constrain(DesiredRollAngle, -1, 1);
@@ -90,7 +73,7 @@ void loop()
   DesiredVerticalVelocity = (RemoteControl.InputValue[Velocity] - THROTTLE_RANGE)/THROTTLE_RANGE;      
   DesiredVerticalVelocity = constrain(DesiredVerticalVelocity, 0, 1);
 
-  Madgwick.Madgwick6DOF(GyroX_Filt, -GyroY_Filt, -GyroZ_Filt, -AccX_Filt, AccY_Filt, AccZ_Filt,  deltaT_F);
+  Madgwick.Madgwick6DOF(imu_6500.GyroX_Filt, -imu_6500.GyroY_Filt, -imu_6500.GyroZ_Filt, -imu_6500.AccX_Filt, imu_6500.AccY_Filt, imu_6500.AccZ_Filt,  deltaT_F);
 
 
   ////////////////////////////////////////////// ROLL  CONTROL /////////////////////////////////////////
@@ -104,7 +87,7 @@ void loop()
 
   //Serial.println("DesiredRollRateInput:");Serial.println(DesiredRollRateInput);
 
-  RollRateError = DesiredRollRateInput - GyroX;
+  RollRateError = DesiredRollRateInput - imu_6500.GyroX;
   InputRoll = .01*roll_rate_control.pid_equation(RollRateError, deltaT_F);
   ////////////////////////////////////////////// ROLL  CONTROL /////////////////////////////////////////
 
@@ -116,13 +99,13 @@ void loop()
   DesiredPitchRate = constrain(DesiredPitchRate, PITCH_RATE_MIN, PITCH_RATE_MAX);
   DesiredPitchRateInput = (1 - Pitch_Rate_Damping)*DesiredPitchRateInput + Pitch_Rate_Damping * DesiredPitchRate;
 
-  PitchRateError = (DesiredPitchRateInput + GyroY);
+  PitchRateError = (DesiredPitchRateInput + imu_6500.GyroY);
   InputPitch = .01* pitch_rate_control.pid_equation(PitchRateError, deltaT_F);
   ///////////////////////////////////////////// PITCH  CONTROL /////////////////////////////////////////
 
 
   ///////////////////////////////////////////// YAW  CONTROL /////////////////////////////////////////
-  YawRateError = DesiredYawRate - GyroZ;
+  YawRateError = DesiredYawRate - imu_6500.GyroZ;
   InputYaw = .01*yaw_rate_control.pid_equation(YawRateError, deltaT_F);
   ///////////////////////////////////////////// YAW  CONTROL /////////////////////////////////////////
 
@@ -205,6 +188,7 @@ void loop()
     }
   }
 
+
   loopRate(2000);
 }
 
@@ -223,7 +207,7 @@ void MadgwickConverge()
 {
   for(int i = 0; i < 10000; i++)
   {
-    Madgwick.Madgwick6DOF(GyroX_Filt, -GyroY_Filt, -GyroZ_Filt, -AccX_Filt, AccY_Filt, AccZ_Filt, .0005);
+    Madgwick.Madgwick6DOF(imu_6500.GyroX_Filt, -imu_6500.GyroY_Filt, -imu_6500.GyroZ_Filt, -imu_6500.AccX_Filt, imu_6500.AccY_Filt, imu_6500.AccZ_Filt, .0005);
   }
   loopRate(2000);
 }

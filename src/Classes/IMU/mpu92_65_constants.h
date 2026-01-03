@@ -51,13 +51,13 @@ const int16_t ThrottleIdle = 1050;//1180
 
 const int16_t in_Min = 1000;
 const int16_t in_Max = 2000;
-const int16_t out_Min = 125;//31.875;//31.875 MIN
-const int16_t out_Max = 250;//50.000;//63.750 MAX
+const int16_t out_Min = 125;
+const int16_t out_Max = 250;
 
-const int8_t MOTOR_FRONT_RIGHT  = 2;//8; //on teensy 4
-const int8_t MOTOR_FRONT_LEFT   = 4;//14;//on teensy 2
-const int8_t MOTOR_REAR_RIGHT   = 6;//17;//on teensy 3
-const int8_t MOTOR_REAR_LEFT    = 8;//20;//on teensy
+const int8_t MOTOR_FRONT_RIGHT  = 2;//input 4 on ESC
+const int8_t MOTOR_FRONT_LEFT   = 4;//Input 2 on ESC
+const int8_t MOTOR_REAR_RIGHT   = 6;//Input 3 on ESC
+const int8_t MOTOR_REAR_LEFT    = 8;//Input 1 on ESC
 
 /*
     ONESHOT125 protocol uses a pwm signal with a minimum on time of
