@@ -7,6 +7,8 @@
 #include "src/Classes/Remote/fsi6.h"
 #include "src/Classes/IMU/mpu92_65.h"
 
+MPU_92_65 imu_6500;
+
 fsi6 RemoteControl;
 
 SecondOrderFilter Pitch_2nd;
@@ -20,6 +22,8 @@ PID roll_rate_control(RemoteControl.InputValue[Velocity], PRateRoll, IRateRoll, 
 PID yaw_rate_control(RemoteControl.InputValue[Velocity], PRateYaw, IRateYaw, DRateYaw, FeedForwardGainYawRate, integral_Windup, loop_Saturation, false);
 
 MadgwickFilter Madgwick;
+
+
 
 #endif // DRONE_CFG_H
 

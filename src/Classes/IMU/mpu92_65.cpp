@@ -1,34 +1,13 @@
 #ifndef MPU92_65_C
 #define MPU92_65_C
 
-#include "SPI.h"
-#include "mpu6500.h"
+
 #include "mpu92_65.h"
 
 
-/*
-class MPU_92_65
-{
-    private:
-    
-    public:
-}
-*/
+MPU_92_65::MPU_92_65():imu(&SPI, 10){}
 
-int32_t gx_offset;// -67;// -130;
-int32_t gy_offset;//-14;// -119;
-int32_t gz_offset;//-13;// -29;
-
-int32_t GyroX_Filt, GyroY_Filt, GyroZ_Filt;
-
-int32_t AccX_Filt, AccY_Filt, AccZ_Filt;
-
-int32_t AccX, AccY, AccZ;
-int32_t GyroX, GyroY, GyroZ;
-
-bfs::Mpu6500 imu(&SPI, 10);
-
-void checkIMUSPISensor()
+void MPU_92_65::checkIMUSPISensor()
 {
     SPI.begin();
     // Initialize and configure IMU
@@ -49,7 +28,7 @@ void checkIMUSPISensor()
     }
 }
 
-void calibrateGyro(int32_t& gx_offset, int32_t& gy_offset, int32_t& gz_offset)
+void MPU_92_65::calibrateGyro()
 {
   int32_t sum[3] = {0};
 
@@ -79,7 +58,7 @@ void calibrateGyro(int32_t& gx_offset, int32_t& gy_offset, int32_t& gz_offset)
 /*
  Get sensor data from the imu object.
  */
-void getSensorData()
+void MPU_92_65::getSensorData()
 {
   if (imu.Read())
   {
@@ -100,5 +79,7 @@ void getSensorData()
     GyroZ_Filt = (IMU_FILTER_GYRO)*GyroZ + (1-IMU_FILTER_GYRO)*GyroZ_Filt;
   }
 }
+
+
 
 #endif //MPU92_65_C
