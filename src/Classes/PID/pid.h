@@ -12,13 +12,13 @@ class PID
     float integral_gain;
     float derivative_gain;
     
-    double proportional_term;
-    double integral_term;
-    double derivative_term;
-    
-    double prior_error;
-    double prior_integral_term;
-    double prior_derivative_term;
+    float proportional_term;
+    float integral_term;
+    float derivative_term;
+
+    float prior_error;
+    float prior_integral_term;
+    float prior_derivative_term;
     
     //Feed-forward terms
     float feed_forward_derivative_gain;

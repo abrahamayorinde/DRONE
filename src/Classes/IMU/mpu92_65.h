@@ -16,11 +16,11 @@ class MPU_92_65
     void checkIMUSPISensor();
     void calibrateGyro();
     void getSensorData();
-    int32_t gx_offset, gy_offset, gz_offset;
-    int32_t GyroX_Filt, GyroY_Filt, GyroZ_Filt;
-    int32_t GyroX, GyroY, GyroZ;
-    int32_t AccX_Filt, AccY_Filt, AccZ_Filt;
-    int32_t AccX, AccY, AccZ;
+    float gx_offset, gy_offset, gz_offset;
+    float GyroX_Filt, GyroY_Filt, GyroZ_Filt;
+    float GyroX, GyroY, GyroZ;
+    float AccX_Filt, AccY_Filt, AccZ_Filt;
+    float AccX, AccY, AccZ;
 };
 
 

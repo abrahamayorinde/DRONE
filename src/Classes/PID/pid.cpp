@@ -24,7 +24,7 @@ float PID::pid_equation(float error, float deltaT)
 {
     this->proportional_term = this->proportional_gain*error;
     
-    this->integral_term = this->prior_integral_term + this->integral_gain*error*deltaT;
+    this->integral_term = this->prior_integral_term + this->integral_gain*error*deltaT/2;
     
 
     if (this->integral_term > this->integral_windup)
