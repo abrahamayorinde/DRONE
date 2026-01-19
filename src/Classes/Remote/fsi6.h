@@ -13,7 +13,7 @@ class fsi6
         static const int8_t channelAmount = 6;
         static const uint32_t blankTime = 2100;
     public:
-        float pitch_offset, roll_offset, yaw_offset;
+        float pitch_offset, roll_offset, yaw_offset = {0};
         fsi6();
         static void isr();
         void calibrateRemote();

@@ -7,6 +7,7 @@
 
 fsi6::fsi6()
 {
+
 }
 
 float_t fsi6::InputValue[validChannels] = {0,0,0,0,0};

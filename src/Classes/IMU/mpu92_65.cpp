@@ -30,7 +30,7 @@ void MPU_92_65::checkIMUSPISensor()
 
 void MPU_92_65::calibrateGyro()
 {
-  int32_t sum[3] = {0};
+  float sum[3] = {0};
 
   for(int i = 0; i < IMU_CALIBRATION_COUNT; i++)
   {
