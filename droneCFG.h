@@ -37,7 +37,13 @@ motor_obj rear_right(MOTOR_REAR_RIGHT);
 
 motor_obj rear_left(MOTOR_REAR_LEFT);
 
+struct motors
+{
+  motor_obj motor;
+  uint32_t duration;
+};
 
+motors quadcopter[4] = {{front_right, 0}, {front_left, 0}, {rear_right,0}, {rear_left,0}};
 #endif // DRONE_CFG_H
 
 

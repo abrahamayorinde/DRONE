@@ -21,6 +21,7 @@ float_t fsi6::InputValue[validChannels] = {0,0,0,0,0};
  */
 void fsi6::isr()
 {
+  noInterrupts();
     static uint32_t microsAtLastPulse = 0;
     static uint32_t time = 0;
     static uint32_t previousMicros = 0;
@@ -44,6 +45,7 @@ void fsi6::isr()
             ++pulseCounter;
         }
     }
+    interrupts();
 }
 
 

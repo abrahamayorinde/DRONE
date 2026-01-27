@@ -23,34 +23,42 @@ float InputPitch, InputRoll, InputYaw = {0};
 float dutyCycleRearLeft, dutyCycleFrontLeft, dutyCycleRearRight, dutyCycleFrontRight = {0};
 float rearLeftMotorCommand, frontLeftMotorCommand, rearRightMotorCommand, frontRightMotorCommand = {0};
 ///////////////////////////////////////////////////////////////////////////////////////////
+IntervalTimer msec500Timer;
+IntervalTimer msec1Timer;
 
+uint32_t turn_on_time = 0;
+uint32_t turn_off_time = 0;
 void setup() 
 {
-  Serial.begin(115200);
+  //Serial.begin(115200);
 
   imu_6500.checkIMUSPISensor();//verify that the sensor is working correctly.  If it is not, the software will not halt here.
 
-  Serial.println("Sensor check passed.");
+  //Serial.println("Sensor check passed.");
 
   attachInterrupt(digitalPinToInterrupt(interruptPin), RemoteControl.isr, RISING);
 
-  Serial.println("Interrupt attach complete.");
+  //Serial.println("Interrupt attach complete.");
 
   analogWriteResolution(8); //Resolution of data written to pinMode outputs is 8-bit
 
-  Serial.println("Write resolution (8) complete.");
+  //Serial.println("Write resolution (8) complete.");
 
   imu_6500.calibrateGyro();
 
-  Serial.println("Gyro offsets calculated.");
+  //Serial.println("Gyro offsets calculated.");
 
   RemoteControl.calibrateRemote();  //Calculate offsets with yaw, pitch and roll at center position and throttle at lowest position.
 
-  Serial.println("Remote offsets calculated.");
+  //Serial.println("Remote offsets calculated.");
 
   MadgwickConverge(); //allow Madgwick filter to converge before utilizing the data in the control algorithm
 
-  Serial.println("Madgwick filter converged to stable value.");
+  //Serial.println("Madgwick filter converged to stable value.");
+
+  msec500Timer.begin(motor_isr_ON, 500);
+  msec1Timer.begin(motor_isr_OFF, 1);
+
 }
 
 void loop() 
@@ -130,14 +138,15 @@ void loop()
     reset_pid();
   }
   
-  dutyCycleRearLeft   = constrain(  rearLeftMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
+  dutyCycleFrontRight = constrain(frontRightMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
   dutyCycleFrontLeft  = constrain( frontLeftMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
   dutyCycleRearRight  = constrain( rearRightMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
-  dutyCycleFrontRight = constrain(frontRightMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
+  dutyCycleRearLeft   = constrain(  rearLeftMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
 
+
+  /*
   int disabled = 0;
   int pulseStart, timer = {0};
-
 
   while(micros() - previousTime < 250)// [250 for 2000Hz], [83 for 3000Hz], [0 for 4000Hz]
   {
@@ -180,6 +189,7 @@ void loop()
   }
 
   loopRate(2000);
+  */
 }
 
 
@@ -224,4 +234,43 @@ void loopRate(int loopfreq)
   {
     checker = micros();
   }
+}
+
+void motor_isr_ON()
+{
+  noInterrupts();
+  turn_on_time = micros();
+  quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.turn_on();
+  quadcopter[MOTOR_FRONT_LEFT/2-1].motor.turn_on();
+  quadcopter[MOTOR_REAR_RIGHT/2-1].motor.turn_on();
+  quadcopter[MOTOR_REAR_LEFT/2-1].motor.turn_on();
+
+  quadcopter[MOTOR_FRONT_RIGHT/2-1].duration = dutyCycleFrontRight;
+  quadcopter[MOTOR_FRONT_LEFT/2-1].duration = dutyCycleFrontLeft;
+  quadcopter[MOTOR_REAR_RIGHT/2-1].duration = dutyCycleRearRight;
+  quadcopter[MOTOR_REAR_LEFT/2-1].duration = dutyCycleRearLeft;
+  interrupts();
+}
+
+void motor_isr_OFF()
+{
+  noInterrupts();
+  turn_off_time = micros();
+  if(turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_RIGHT/2-1].duration)
+  {
+    quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.turn_off();
+  }
+   if(turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_LEFT/2-1].duration)
+  {
+    quadcopter[MOTOR_FRONT_LEFT/2-1].motor.turn_off();
+  }
+  if(turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_RIGHT/2-1].duration)
+  {
+    quadcopter[MOTOR_REAR_RIGHT/2-1].motor.turn_off();
+  }
+  if(turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_LEFT/2-1].duration)
+  {
+    quadcopter[MOTOR_REAR_LEFT/2-1].motor.turn_off();
+  }     
+  interrupts();
 }

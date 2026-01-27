@@ -13,5 +13,15 @@ class motor_obj
         void turn_off();
         motor_obj(int PIN);
 };
+/*ß
+class motor_isr
+{
+    private:
+    float motor_timer[4] = INFINITY;
 
+    public:
+    motor_isr();
+
+}
+*/
 #endif //MOTORS_H
