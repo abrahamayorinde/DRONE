@@ -46,9 +46,9 @@ const float IVelocityVertical = 0;
 const float DVelocityVertical = 0;
 const float FeedForwardGainVertical = 1.0;
 /****************************************/
-const float PAngleRoll =  .10;//0.08; //2.4;//0.200;
-const float IAngleRoll =  .20;//0.200;//6.0;//0.300;
-const float DAngleRoll =  .02;//0.0;  //0;  //.0500;
+const float PAngleRoll =  2.4;//.10;//0.08; //0.200;
+const float IAngleRoll =  6.0;//.20;//0.200;//0.300;
+const float DAngleRoll =  0.3;//.02;//0.0;  //.0500;
 const float FeedForwardGainRoll = 1.0;
 
 const float Roll_Rate_Damping = 0.9;
@@ -57,9 +57,9 @@ const float IRateRoll =  .17;    //.1500;   //.2000;
 const float DRateRoll =  .000020;//0.000010;//.0002;
 const float FeedForwardGainRollRate = 1.0;
 /****************************************/
-const float PAnglePitch = .10;//0.08; //2.4;//0.200;
-const float IAnglePitch = .20;//0.200;//6.0;//0.300;
-const float DAnglePitch = .02;//0.0;  //0;  //.0500;
+const float PAnglePitch = 2.4;//.10;//0.08; //0.200;
+const float IAnglePitch = 6.0;//.20;//0.200;//0.300;
+const float DAnglePitch = 0.3;//.02;//0.0;  //.0500;
 const float FeedForwardGainPitch = 1.0;
 
 const float Pitch_Rate_Damping = 0.9;
