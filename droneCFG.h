@@ -43,7 +43,7 @@ struct motors
   uint32_t duration;
 };
 
-motors quadcopter[4] = {{front_right, 0}, {front_left, 0}, {rear_right,0}, {rear_left,0}};
+motors quadcopter[4] = {{front_right, 125}, {front_left, 125}, {rear_right,125}, {rear_left,125}};
 #endif // DRONE_CFG_H
 
 

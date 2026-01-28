@@ -93,8 +93,7 @@ void loop()
   DesiredRollRate = roll_control.pid_equation(RollAngleError, deltaT_F);
   Serial.print("DesiredRollRate:");Serial.println(DesiredRollRate);
 
-  DesiredRollRate = constrain(30*DesiredRollRate, ROLL_RATE_MIN, ROLL_RATE_MAX);
-  //DesiredRollRate = constrain(DesiredRollRate, ROLL_RATE_MIN, ROLL_RATE_MAX);
+  DesiredRollRate = constrain(DesiredRollRate, ROLL_RATE_MIN, ROLL_RATE_MAX);
   DesiredRollRateInput = (1 - Roll_Rate_Damping)*DesiredRollRateInput + Roll_Rate_Damping * DesiredRollRate;
   Serial.print("DesiredRollRateInput:");Serial.println(DesiredRollRateInput);
 
@@ -106,12 +105,10 @@ void loop()
 
 
   ///////////////////////////////////////////// PITCH  CONTROL /////////////////////////////////////////
-  //Serial.print("Pitch_Angle:");Serial.println(Madgwick.pitch + 9.5);
   PitchAngleError = DesiredPitchAngle - ((-Madgwick.pitch) + 9.5);// ;
   DesiredPitchRate = pitch_control.pid_equation(PitchAngleError, deltaT_F);
 
-  DesiredPitchRate = constrain(30*DesiredPitchRate, PITCH_RATE_MIN, PITCH_RATE_MAX);
-  //DesiredPitchRate = constrain(DesiredPitchRate, PITCH_RATE_MIN, PITCH_RATE_MAX);
+  DesiredPitchRate = constrain(DesiredPitchRate, PITCH_RATE_MIN, PITCH_RATE_MAX);
   DesiredPitchRateInput = (1 - Pitch_Rate_Damping)*DesiredPitchRateInput + Pitch_Rate_Damping * DesiredPitchRate;
 
   PitchRateError = (DesiredPitchRateInput + imu_6500.GyroY);
@@ -143,53 +140,6 @@ void loop()
   dutyCycleRearRight  = constrain( rearRightMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
   dutyCycleRearLeft   = constrain(  rearLeftMotorCommand*MIN_ON_TIME_MSEC_PWM + ON_TIME_RANGE_MSEC_PWM, MIN_ON_TIME_MSEC_PWM, MAX_ON_TIME_MSEC_PWM);
 
-
-  /*
-  int disabled = 0;
-  int pulseStart, timer = {0};
-
-  while(micros() - previousTime < 250)// [250 for 2000Hz], [83 for 3000Hz], [0 for 4000Hz]
-  {
-  }
-
-  if(micros() - previousTime >= 250)  // [250 for 2000Hz], [83 for 3000Hz], [0 for 4000Hz]
-  {  
-    pulseStart = micros();
-
-    front_right.turn_on();
-    front_left.turn_on();
-    rear_right.turn_on();
-    rear_left.turn_on();
-
-    while (disabled < 4 ) 
-    { //Keep going until all motors high time is completed 
-      timer = micros();
-
-      if((dutyCycleRearLeft <= (timer-pulseStart)) && rear_left.flag == 1)
-      {
-        rear_left.turn_off();
-        disabled = disabled + 1;
-      }             
-      if((dutyCycleFrontRight <= (timer-pulseStart)) && front_right.flag == 1)
-      {
-        front_right.turn_off();
-        disabled = disabled + 1;
-      }
-      if((dutyCycleFrontLeft <= (timer-pulseStart)) && front_left.flag == 1)
-      {
-        front_left.turn_off();
-        disabled = disabled + 1;
-      }
-      if((dutyCycleRearRight <= (timer-pulseStart)) && rear_right.flag == 1)
-      {
-        rear_right.turn_off();
-        disabled = disabled + 1;
-      }
-    }
-  }
-
-  loopRate(2000);
-  */
 }
 
 
@@ -256,19 +206,19 @@ void motor_isr_OFF()
 {
   noInterrupts();
   turn_off_time = micros();
-  if(turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_RIGHT/2-1].duration)
+  if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_RIGHT/2-1].duration) && (quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.turn_off();
   }
-   if(turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_LEFT/2-1].duration)
+   if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_LEFT/2-1].duration) && (quadcopter[MOTOR_FRONT_LEFT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_FRONT_LEFT/2-1].motor.turn_off();
   }
-  if(turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_RIGHT/2-1].duration)
+  if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_RIGHT/2-1].duration) && (quadcopter[MOTOR_REAR_RIGHT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_REAR_RIGHT/2-1].motor.turn_off();
   }
-  if(turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_LEFT/2-1].duration)
+  if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_LEFT/2-1].duration) && (quadcopter[MOTOR_REAR_LEFT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_REAR_LEFT/2-1].motor.turn_off();
   }     
