@@ -25,6 +25,7 @@ float rearLeftMotorCommand, frontLeftMotorCommand, rearRightMotorCommand, frontR
 ///////////////////////////////////////////////////////////////////////////////////////////
 IntervalTimer msec500Timer;
 IntervalTimer msec1Timer;
+IntervalTimer motorTimer;
 
 uint32_t turn_on_time = 0;
 uint32_t turn_off_time = 0;
@@ -57,8 +58,7 @@ void setup()
   //Serial.println("Madgwick filter converged to stable value.");
 
   msec500Timer.begin(motor_isr_ON, 500);
-  msec1Timer.begin(motor_isr_OFF, 1);
-
+  //motorTimer.begin(motor_isr_OFF, 1);
 }
 
 void loop() 
@@ -199,6 +199,8 @@ void motor_isr_ON()
   quadcopter[MOTOR_FRONT_LEFT/2-1].duration = dutyCycleFrontLeft;
   quadcopter[MOTOR_REAR_RIGHT/2-1].duration = dutyCycleRearRight;
   quadcopter[MOTOR_REAR_LEFT/2-1].duration = dutyCycleRearLeft;
+
+  motorTimer.begin(motor_isr_INTERMEDIATE, 120);
   interrupts();
 }
 
@@ -222,5 +224,19 @@ void motor_isr_OFF()
   {
     quadcopter[MOTOR_REAR_LEFT/2-1].motor.turn_off();
   }     
+
+  if((quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.flag == 0) && \
+     (quadcopter[MOTOR_FRONT_LEFT/2-1].motor.flag == 0)  && \
+     (quadcopter[MOTOR_REAR_RIGHT/2-1].motor.flag == 0) && \
+     (quadcopter[MOTOR_REAR_LEFT/2-1].motor.flag == 0) )
+   {
+      msec1Timer.end();
+   }
   interrupts();
+}
+
+void motor_isr_INTERMEDIATE()
+{
+  motorTimer.end();
+  msec1Timer.begin(motor_isr_OFF,1);
 }
