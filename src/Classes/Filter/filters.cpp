@@ -451,16 +451,6 @@ float MadgwickFilter::invSqrt(float x)
 {
   //Fast inverse sqrt for madgwick filter
   
-  //float halfx = 0.5f * x;
-  //float y = x;
-  //long i = *(long*)&y;
-  //i = 0x5f3759df - (i>>1);
-  //y = *(float*)&i;
-  //y = y * (1.5f - (halfx * y * y));
-  //y = y * (1.5f - (halfx * y * y));
-  //return y;
-  
-  //alternate form:
   unsigned int i = 0x5F1F1412 - (*(unsigned int*)&x >> 1);
   float tmp = *(float*)&i;
   float y = tmp * (1.69000231f - 0.714158168f * x * tmp * tmp);
