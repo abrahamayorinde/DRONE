@@ -49,7 +49,7 @@ float PID::pid_equation(float error, float deltaT)
         this->integral_term = 0;
     }
     
-    this->derivative_term = (feed_forward_derivative_gain*derivative_gain*(error - prior_error)/deltaT +  (1 - feed_forward_derivative_gain)*prior_derivative_term);
+    this->derivative_term = (feed_forward_derivative_gain*derivative_gain*(error - prior_error)/deltaT + (1 - feed_forward_derivative_gain)*prior_derivative_term);
     
     this->PIDOutput= this->proportional_term + this->integral_term + this->derivative_term;
 

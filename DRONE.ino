@@ -58,7 +58,6 @@ void setup()
   //Serial.println("Madgwick filter converged to stable value.");
 
   msec500Timer.begin(motor_isr_ON, 500);
-  //motorTimer.begin(motor_isr_OFF, 1);
 }
 
 void loop() 
@@ -160,20 +159,21 @@ void MadgwickConverge()
     imu_6500.getSensorData();
     Madgwick.Madgwick6DOF(imu_6500.GyroX_Filt, -imu_6500.GyroY_Filt, -imu_6500.GyroZ_Filt, -imu_6500.AccX_Filt, imu_6500.AccY_Filt, imu_6500.AccZ_Filt, .0005);
   }
-  loopRate(2000);
+
+  //loopRate(2000);
 }
 
-
+/*
 void loopRate(int loopfreq) 
 {
   //DESCRIPTION: Regulate main loop rate to specified frequency in Hz
-  /*
-   * It's good to operate at a constant loop rate for filters to remain stable and whatnot. Interrupt routines running in the
-   * background cause the loop rate to fluctuate. This function basically just waits at the end of every loop iteration until 
-   * the correct time has passed since the start of the current loop for the desired loop rate in Hz. 2kHz is a good rate to 
-   * be at because the loop nominally will run between 2.8kHz - 4.2kHz. This lets us have a little room to add extra computations
-   * and remain above 2kHz, without needing to retune all of our filtering parameters.
-   */
+  /
+  / It's good to operate at a constant loop rate for filters to remain stable and whatnot. Interrupt routines running in the
+  / background cause the loop rate to fluctuate. This function basically just waits at the end of every loop iteration until 
+  / the correct time has passed since the start of the current loop for the desired loop rate in Hz. 2kHz is a good rate to 
+  / be at because the loop nominally will run between 2.8kHz - 4.2kHz. This lets us have a little room to add extra computations
+  / and remain above 2kHz, without needing to retune all of our filtering parameters.
+  //
   float loopDuration = (1.0/loopfreq)*MICROSEC_PER_SECOND;
   //uint32_t current_time = micros();
   uint32_t checker = micros();
@@ -185,7 +185,7 @@ void loopRate(int loopfreq)
     checker = micros();
   }
 }
-
+*/
 void motor_isr_ON()
 {
   noInterrupts();
@@ -208,19 +208,19 @@ void motor_isr_OFF()
 {
   noInterrupts();
   turn_off_time = micros();
-  if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_RIGHT/2-1].duration) && (quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.flag == 1) )
+  if( ((turn_off_time - turn_on_time) >= quadcopter[MOTOR_FRONT_RIGHT/2-1].duration) && (quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_FRONT_RIGHT/2-1].motor.turn_off();
   }
-   if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_FRONT_LEFT/2-1].duration) && (quadcopter[MOTOR_FRONT_LEFT/2-1].motor.flag == 1) )
+   if( ((turn_off_time - turn_on_time) >= quadcopter[MOTOR_FRONT_LEFT/2-1].duration) && (quadcopter[MOTOR_FRONT_LEFT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_FRONT_LEFT/2-1].motor.turn_off();
   }
-  if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_RIGHT/2-1].duration) && (quadcopter[MOTOR_REAR_RIGHT/2-1].motor.flag == 1) )
+  if( ((turn_off_time - turn_on_time) >= quadcopter[MOTOR_REAR_RIGHT/2-1].duration) && (quadcopter[MOTOR_REAR_RIGHT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_REAR_RIGHT/2-1].motor.turn_off();
   }
-  if( (turn_off_time - turn_on_time >= quadcopter[MOTOR_REAR_LEFT/2-1].duration) && (quadcopter[MOTOR_REAR_LEFT/2-1].motor.flag == 1) )
+  if( ((turn_off_time - turn_on_time) >= quadcopter[MOTOR_REAR_LEFT/2-1].duration) && (quadcopter[MOTOR_REAR_LEFT/2-1].motor.flag == 1) )
   {
     quadcopter[MOTOR_REAR_LEFT/2-1].motor.turn_off();
   }     
