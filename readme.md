@@ -22,12 +22,12 @@ Software Circuit Diagram:
 
 Software Methodology:
 
-Building a quadcopter requires certain basic elements.  Naturally it requires motors and propellers for thrust, a battery supply to power said motors.  Since the motors used for this project are brushless DC motors, an electronic speed controller(ESC) is also required.  In addition a microcontroller or flight controller is required to provide data signals to the speed controller.  The microcontroller must receive certain inputs aside from just power.  The microcontroller will need to interface with a sensor/sensors and also a receiver so that it can receive remote control commands from the drone pilot.  
+Building a quadcopter requires certain basic elements.  Naturally it requires motors and propellers for thrust, a battery supply to power said motors.  Since the motors used for this project are brushless DC motors, an electronic speed controller(ESC) is also required.  A microcontroller or flight controller is required to provide data signals to the speed controller.  In this case, the microcontroller is a Teensy 4.0.  The Teensy 4.0 has to interface with a sensor/sensors and also a receiver so that it can receive remote control commands from the drone pilot.  
 
 The sensor in this case is an MPU6050 6 axis IMU, while the receiver is an fsi6 receiver.
 
-The microcontroller communicates with the IMU via SPI protocol at 1000Khz.  The microcontroller also receives information from the remote control using a serial interface and PPM modulation. (Pulse-position modulation (PPM) is a technique where analog message values are encoded by varying the position of fixed-width pulses within specific time slots relative to a reference clock.)
+The Teensy 4.0 communicates with the IMU via SPI protocol at 1000Khz.  It also receives information from the remote control using a serial interface and PPM modulation. Pulse-position modulation (PPM) is a technique where analog message values are encoded by varying the position of fixed-width pulses within specific time slots relative to a reference clock.)
 
-The microcontroller also sends information to the electronic speed controller.  The ESC used is a 4 in 1 controller where there are four ESC's mounted on the same printed circuit board.  Each esc has its own serial input from the microcontroller.  The protocol used to transmit the information is OneShot125.  This protocol sends pwm signals at a frequency of 2000hz (500 microsecond period), with a duty cycle ranging from 125 microseconds to 250 microseconds representing the minimum and maximum speeds respectively.
+What signal will the Teensy send to the speed controller?  The ESC used is a 4 in 1 controller where there are four ESC's mounted on the same printed circuit board.  Each esc has its own serial input from the microcontroller.  The protocol used to transmit the information is OneShot125.  This protocol sends pwm signals at a frequency of 2000hz (500 microsecond period), with a duty cycle ranging from 125 microseconds to 250 microseconds representing the minimum and maximum speeds respectively.
 
 ![Software components](drone_software_components.png)
