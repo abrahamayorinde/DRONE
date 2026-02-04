@@ -5,7 +5,7 @@ Component list for the autoleveling drone below.
 
  **Readytosky RS2205 2300KV Brushless Motor CW/CCW 3-4S RC Motors for FPV Racing Drone FPV Multicopter x 4**
  
- **PJRC Teensy 4.0 x 1
+ **PJRC Teensy 4.0 x 1**
 
  **HiLetgo 3pcs GY-521 MPU-6050 MPU6050 3 Axis Accelerometer Gyroscope Module 6 DOF 6-axis Accelerometer x 1**
 
@@ -19,7 +19,7 @@ Component list for the autoleveling drone below.
 
 Software Circuit Diagram:ToDo
 
-Software Methodology:
+**Project Discussion:**
 
 Building a quadcopter requires certain basic elements.  Naturally it requires motors and propellers for thrust, a battery supply to power said motors.  Since the motors used for this project are brushless DC motors, an electronic speed controller(ESC) is also required.  A microcontroller or flight controller is required to provide data signals to the speed controller.  In this case, the microcontroller is a Teensy 4.0.  The Teensy 4.0 has to interface with a sensor/sensors and also a receiver so that it can receive remote control commands from the drone pilot.  
 
