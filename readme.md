@@ -36,5 +36,4 @@ How is pitch controlled?  Pitch control requires a delta between the force via t
 
 Roll control is similar.  In order to achieve a roll inclination there must be a delta in thrust between the left half of the drone and the right half of the drone.  That is to say the propellers on the left side have the same thrust while the propellers on the right side must have a thrust value of lower or greater value.  If one is wondering why there is no yaw associated with a roll inclination -- it is because the yaw torque on the left half and right half opposes each other.  The torque from the front motor is canceled out by the torque from the rear motor.
 
-Elevation torque has been achieved.  
 ![Software components](drone_software_components.png)
