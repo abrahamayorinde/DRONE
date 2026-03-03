@@ -31,31 +31,24 @@ uint32_t turn_on_time = 0;
 uint32_t turn_off_time = 0;
 void setup() 
 {
-  //Serial.begin(115200);
 
   imu_6500.checkIMUSPISensor();//verify that the sensor is working correctly.  If it is not, the software will not halt here.
 
-  //Serial.println("Sensor check passed.");
 
   attachInterrupt(digitalPinToInterrupt(interruptPin), RemoteControl.isr, RISING);
 
-  //Serial.println("Interrupt attach complete.");
 
   analogWriteResolution(8); //Resolution of data written to pinMode outputs is 8-bit
 
-  //Serial.println("Write resolution (8) complete.");
 
   imu_6500.calibrateGyro();
 
-  //Serial.println("Gyro offsets calculated.");
 
   RemoteControl.calibrateRemote();  //Calculate offsets with yaw, pitch and roll at center position and throttle at lowest position.
 
-  //Serial.println("Remote offsets calculated.");
 
   MadgwickConverge(); //allow Madgwick filter to converge before utilizing the data in the control algorithm
 
-  //Serial.println("Madgwick filter converged to stable value.");
 
   msec500Timer.begin(motor_isr_ON, 500);
 }
@@ -157,8 +150,6 @@ void MadgwickConverge()
     imu_6500.getSensorData();
     Madgwick.Madgwick6DOF(imu_6500.GyroX_Filt, -imu_6500.GyroY_Filt, -imu_6500.GyroZ_Filt, -imu_6500.AccX_Filt, imu_6500.AccY_Filt, imu_6500.AccZ_Filt, .0005);
   }
-
-  //loopRate(2000);
 }
 
 void motor_isr_ON()
