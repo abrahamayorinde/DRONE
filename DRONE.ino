@@ -68,37 +68,35 @@ void loop()
 
   imu_6500.getSensorData();
 
+  //Collect the desired roll angle from remote and while subtracting the offset
   DesiredRollAngle  =  (RemoteControl.InputValue[Roll] - RemoteControl.roll_offset)/ROLL_MARGIN;
-  Serial.print("DesiredRollAngle:");Serial.println(DesiredRollAngle);
   DesiredRollAngle  = maxRoll*constrain(DesiredRollAngle, -1, 1);
-  Serial.print("DesiredRollAngle_shrunk:");Serial.println(DesiredRollAngle);
 
+  //Collect the desired pitch angle from remote and while subtracting the offset
   DesiredPitchAngle = -(RemoteControl.InputValue[Pitch] - RemoteControl.pitch_offset)/PITCH_MARGIN;//-1 coeff pitch angle correponds to imu orientation
   DesiredPitchAngle = maxPitch*constrain(DesiredPitchAngle, -1, 1);
 
-  DesiredYawRate = -(RemoteControl.InputValue[Yaw] - RemoteControl.yaw_offset )/YAW_MARGIN;//-1 coeff pitch angle correponds to imu orientation
+  //Collect the desired yaw rate  from remote and while subtracting the offset
+  DesiredYawRate = -(RemoteControl.InputValue[Yaw] - RemoteControl.yaw_offset )/YAW_MARGIN;//-1 coeff yaw angle correponds to imu orientation
   DesiredYawRate = maxYaw*constrain(DesiredYawRate, -1, 1);
 
+  //Collect the desired vertical velocity/thrust from remote and while subtracting the offset
   DesiredVerticalVelocity = (RemoteControl.InputValue[Velocity] - THROTTLE_RANGE)/THROTTLE_RANGE;      
   DesiredVerticalVelocity = constrain(DesiredVerticalVelocity, 0, 1);
 
+  //Pass the raw imu data to the madgwick filter
   Madgwick.Madgwick6DOF(imu_6500.GyroX_Filt, -imu_6500.GyroY_Filt, -imu_6500.GyroZ_Filt, -imu_6500.AccX_Filt, imu_6500.AccY_Filt, imu_6500.AccZ_Filt,  deltaT_F);
 
 
   ////////////////////////////////////////////// ROLL  CONTROL /////////////////////////////////////////
-  Serial.print("Roll_Angle:");Serial.println(Madgwick.roll);
   RollAngleError = DesiredRollAngle - ( Madgwick.roll);
-  Serial.print("RollAngleError:");Serial.println(RollAngleError);
   DesiredRollRate = roll_control.pid_equation(RollAngleError, deltaT_F);
-  Serial.print("DesiredRollRate:");Serial.println(DesiredRollRate);
 
   DesiredRollRate = constrain(DesiredRollRate, ROLL_RATE_MIN, ROLL_RATE_MAX);
   DesiredRollRateInput = (1 - Roll_Rate_Damping)*DesiredRollRateInput + Roll_Rate_Damping * DesiredRollRate;
-  Serial.print("DesiredRollRateInput:");Serial.println(DesiredRollRateInput);
 
   RollRateError = DesiredRollRateInput - imu_6500.GyroX;
   InputRoll = .01*roll_rate_control.pid_equation(RollRateError, deltaT_F);
-  Serial.print("InputRoll:");Serial.println(InputRoll);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -163,29 +161,6 @@ void MadgwickConverge()
   //loopRate(2000);
 }
 
-/*
-void loopRate(int loopfreq) 
-{
-  //DESCRIPTION: Regulate main loop rate to specified frequency in Hz
-  /
-  / It's good to operate at a constant loop rate for filters to remain stable and whatnot. Interrupt routines running in the
-  / background cause the loop rate to fluctuate. This function basically just waits at the end of every loop iteration until 
-  / the correct time has passed since the start of the current loop for the desired loop rate in Hz. 2kHz is a good rate to 
-  / be at because the loop nominally will run between 2.8kHz - 4.2kHz. This lets us have a little room to add extra computations
-  / and remain above 2kHz, without needing to retune all of our filtering parameters.
-  //
-  float loopDuration = (1.0/loopfreq)*MICROSEC_PER_SECOND;
-  //uint32_t current_time = micros();
-  uint32_t checker = micros();
-  
-  //Sit in loop until appropriate time has passed
-  //while (invFreq > (float)(checker - current_time)) 
-  while ((float)(checker - currentStart) < loopDuration ) 
-  {
-    checker = micros();
-  }
-}
-*/
 void motor_isr_ON()
 {
   noInterrupts();
